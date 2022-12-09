@@ -1,6 +1,6 @@
 ![](pics/topology.png)
 
-Конфигурации всех устройств будут ниже. Я привожу только конфигурации интерфейсов, потому что системные конфигурации я не трогал.
+Конфигурации всех устройств будут ниже. Я привожу только конфигурации интерфейсов, потому что системные конфигурации я не трогал. Я проверил, что система является отказоустойчивой (удалял связи по одной и всё продолжало работать) - можно удалить любую из трёх центральных связей, потому что они лежат на цикле из одинаковых линков. При этом дефолтно горизонтальный линк отключен (см самый нижний вывод spanning-tree).
 
 ## Конфигурация клиента и результат пинга
 ### VPC1
@@ -18,11 +18,11 @@ MTU         : 1500
 
 VPCS> ping 10.0.20.1
 
-84 bytes from 10.0.20.1 icmp_seq=1 ttl=63 time=14.569 ms
-84 bytes from 10.0.20.1 icmp_seq=2 ttl=63 time=17.472 ms
-84 bytes from 10.0.20.1 icmp_seq=3 ttl=63 time=17.962 ms
-84 bytes from 10.0.20.1 icmp_seq=4 ttl=63 time=11.755 ms
-84 bytes from 10.0.20.1 icmp_seq=5 ttl=63 time=9.121 ms
+84 bytes from 10.0.20.1 icmp_seq=1 ttl=63 time=8.323 ms
+84 bytes from 10.0.20.1 icmp_seq=2 ttl=63 time=6.892 ms
+84 bytes from 10.0.20.1 icmp_seq=3 ttl=63 time=5.132 ms
+84 bytes from 10.0.20.1 icmp_seq=4 ttl=63 time=9.242 ms
+84 bytes from 10.0.20.1 icmp_seq=5 ttl=63 time=5.825 ms
 ```
 ### VPC2
 ```
@@ -39,11 +39,11 @@ MTU         : 1500
 
 VPCS> ping 10.0.10.1
 
-84 bytes from 10.0.10.1 icmp_seq=1 ttl=63 time=11.164 ms
-84 bytes from 10.0.10.1 icmp_seq=2 ttl=63 time=3.604 ms
-84 bytes from 10.0.10.1 icmp_seq=3 ttl=63 time=8.724 ms
-84 bytes from 10.0.10.1 icmp_seq=4 ttl=63 time=9.006 ms
-84 bytes from 10.0.10.1 icmp_seq=5 ttl=63 time=3.554 ms
+84 bytes from 10.0.10.1 icmp_seq=1 ttl=63 time=8.145 ms
+84 bytes from 10.0.10.1 icmp_seq=2 ttl=63 time=7.383 ms
+84 bytes from 10.0.10.1 icmp_seq=3 ttl=63 time=7.289 ms
+84 bytes from 10.0.10.1 icmp_seq=4 ttl=63 time=7.489 ms
+84 bytes from 10.0.10.1 icmp_seq=5 ttl=63 time=3.498 ms
 ```
 ## Конфигурация маршрутизатора (VyOS6)
 
@@ -79,15 +79,18 @@ interfaces {
         member {
             interface eth0 {
                 allowed-vlan 10
+                allowed-vlan 20
             }
             interface eth1 {
                 allowed-vlan 20
+                allowed-vlan 10
             }
             interface eth2 {
                 allowed-vlan 20
                 allowed-vlan 10
             }
         }
+        priority 1
         stp
     }
     ethernet eth0 {
@@ -113,16 +116,19 @@ interfaces {
         enable-vlan
         member {
             interface eth0 {
-                allowed-vlan 10
                 native-vlan 10
             }
             interface eth1 {
+                allowed-vlan 10
+                allowed-vlan 20
                 cost 1000
             }
             interface eth2 {
                 allowed-vlan 10
+                allowed-vlan 20
             }
         }
+        priority 2
         stp
     }
     ethernet eth0 {
@@ -140,6 +146,7 @@ interfaces {
     loopback lo {
     }
 }
+
 ```
 ## Конфигурация коммутатора (VyOS4)
 ```
@@ -148,16 +155,18 @@ interfaces {
         enable-vlan
         member {
             interface eth0 {
-                allowed-vlan 20
                 native-vlan 20
             }
             interface eth1 {
-                cost 1000
+                allowed-vlan 10
+                allowed-vlan 20
             }
             interface eth2 {
                 allowed-vlan 20
+                allowed-vlan 10
             }
         }
+        priority 2
         stp
     }
     ethernet eth0 {
@@ -179,40 +188,40 @@ interfaces {
 
 ## Вывод stp на VyOS4
 ```
-vyos@vyos:~$ show bridge br0 spanning-tree
+vyos@vyos:~$ show bridge br0 spanning-tree 
 br0
- bridge id              8000.500000040000
- designated root        8000.500000030000
- root port                 3                    path cost                200
+ bridge id              0002.500000040000
+ designated root        0001.500000050000
+ root port                 3                    path cost                100
  max age                  20.00                 bridge max age            20.00
  hello time                2.00                 bridge hello time          2.00
  forward delay            14.00                 bridge forward delay      14.00
  ageing time             300.00
  hello timer               0.00                 tcn timer                  0.00
- topology change timer     0.00                 gc timer                 223.87
+ topology change timer     0.00                 gc timer                  72.08
  flags                  
 
 eth0 (1)
  port id                8001                    state                forwarding
- designated root        8000.500000030000       path cost                100
- designated bridge      8000.500000040000       message age timer          0.00
+ designated root        0001.500000050000       path cost                100
+ designated bridge      0002.500000040000       message age timer          0.00
  designated port        8001                    forward delay timer        0.00
- designated cost         200                    hold timer                 0.61
+ designated cost         100                    hold timer                 0.00
  flags                  
 
 eth1 (2)
  port id                8002                    state                  blocking
- designated root        8000.500000030000       path cost               1000
- designated bridge      8000.500000030000       message age timer         19.60
+ designated root        0001.500000050000       path cost                100
+ designated bridge      0002.500000030000       message age timer         18.47
  designated port        8002                    forward delay timer        0.00
- designated cost           0                    hold timer                 0.00
+ designated cost         100                    hold timer                 0.00
  flags                  
 
 eth2 (3)
  port id                8003                    state                forwarding
- designated root        8000.500000030000       path cost                100
- designated bridge      8000.500000050000       message age timer         19.60
+ designated root        0001.500000050000       path cost                100
+ designated bridge      0001.500000050000       message age timer         18.47
  designated port        8002                    forward delay timer        0.00
- designated cost         100                    hold timer                 0.00
+ designated cost           0                    hold timer                 0.00
  flags  
 ```
