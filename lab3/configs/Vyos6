@@ -1,0 +1,38 @@
+set interfaces ethernet eth0 hw-id '50:00:00:06:00:00'
+set interfaces ethernet eth0 vif 10 address '10.0.10.1/24'
+set interfaces ethernet eth0 vif 20 address '10.0.20.1/24'
+set interfaces ethernet eth1 address '15.43.15.43/24'
+set interfaces ethernet eth1 hw-id '50:00:00:06:00:01'
+set interfaces ethernet eth2 hw-id '50:00:00:06:00:02'
+set interfaces ethernet eth3 hw-id '50:00:00:06:00:03'
+set interfaces loopback lo
+set nat source rule 20 outbound-interface 'eth1'
+set nat source rule 20 source
+set nat source rule 20 translation address '15.43.15.43'
+set protocols static route 0.0.0.0/0 next-hop 1.0.0.1
+set service dhcp-server shared-network-name VLAN10 subnet 10.0.10.0/24 default-router '10.0.10.1'
+set service dhcp-server shared-network-name VLAN10 subnet 10.0.10.0/24 name-server '10.0.10.1'
+set service dhcp-server shared-network-name VLAN10 subnet 10.0.10.0/24 range 0 start '10.0.10.10'
+set service dhcp-server shared-network-name VLAN10 subnet 10.0.10.0/24 range 0 stop '10.0.10.254'
+set service dhcp-server shared-network-name VLAN20 subnet 10.0.20.0/24 default-router '10.0.20.1'
+set service dhcp-server shared-network-name VLAN20 subnet 10.0.20.0/24 name-serer '10.0.20.1'
+set service dhcp-server shared-network-name VLAN20 subnet 10.0.20.0/24 range 0 tart '10.0.20.10'
+set service dhcp-server shared-network-name VLAN20 subnet 10.0.20.0/24 range 0 top '10.0.20.254'
+set system config-management commit-revisions '100'
+set system conntrack modules ftp
+set system conntrack modules h323
+set system conntrack modules nfs
+set system conntrack modules pptp
+set system conntrack modules sip
+set system conntrack modules sqlnet
+set system conntrack modules tftp
+set system console device ttyS0 speed '115200'
+set system host-name 'vyos'
+set system login user vyos authentication encrypted-password '$6$FNYaM0LUm/A$ltUPpNEf2l5nrh7jSy/nndMii3jBaAsGI2nd.uKirJreffGcNxrOJfcZ9toERAG/SBLq5JxG8x2FoUldCAQ.'
+set system login user vyos authentication plaintext-password ''
+set system ntp server time1.vyos.net
+set system ntp server time2.vyos.net
+set system ntp server time3.vyos.net
+set system syslog global facility all level 'info'
+set system syslog global facility protocols level 'debug'
+
