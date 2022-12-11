@@ -106,7 +106,7 @@ nat {
 protocols {
     static {
         route 0.0.0.0/0 {
-            next-hop 1.0.0.1 {
+            next-hop 15.43.15.44 {
             }
         }
     }

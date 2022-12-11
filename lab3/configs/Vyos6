@@ -15,7 +15,7 @@ set service dhcp-server shared-network-name VLAN10 subnet 10.0.10.0/24 name-serv
 set service dhcp-server shared-network-name VLAN10 subnet 10.0.10.0/24 range 0 start '10.0.10.10'
 set service dhcp-server shared-network-name VLAN10 subnet 10.0.10.0/24 range 0 stop '10.0.10.254'
 set service dhcp-server shared-network-name VLAN20 subnet 10.0.20.0/24 default-router '10.0.20.1'
-set service dhcp-server shared-network-name VLAN20 subnet 10.0.20.0/24 name-serer '10.0.20.1'
+set service dhcp-server shared-network-name VLAN20 subnet 10.0.20.0/24 name-server '10.0.20.1'
 set service dhcp-server shared-network-name VLAN20 subnet 10.0.20.0/24 range 0 tart '10.0.20.10'
 set service dhcp-server shared-network-name VLAN20 subnet 10.0.20.0/24 range 0 top '10.0.20.254'
 set system config-management commit-revisions '100'
