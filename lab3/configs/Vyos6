@@ -9,7 +9,7 @@ set interfaces loopback lo
 set nat source rule 20 outbound-interface 'eth1'
 set nat source rule 20 source
 set nat source rule 20 translation address '15.43.15.43'
-set protocols static route 0.0.0.0/0 next-hop 1.0.0.1
+set protocols static route 0.0.0.0/0 next-hop 15.43.15.44
 set service dhcp-server shared-network-name VLAN10 subnet 10.0.10.0/24 default-router '10.0.10.1'
 set service dhcp-server shared-network-name VLAN10 subnet 10.0.10.0/24 name-server '10.0.10.1'
 set service dhcp-server shared-network-name VLAN10 subnet 10.0.10.0/24 range 0 start '10.0.10.10'
