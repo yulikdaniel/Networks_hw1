@@ -1,0 +1,30 @@
+set interfaces ethernet eth0 address '2.0.0.2/24'
+set interfaces ethernet eth0 hw-id '50:00:00:02:00:00'
+set interfaces ethernet eth1 address '0.0.2.1/24'
+set interfaces ethernet eth1 hw-id '50:00:00:02:00:01'
+set interfaces ethernet eth2 hw-id '50:00:00:02:00:02'
+set interfaces ethernet eth3 hw-id '50:00:00:02:00:03'
+set interfaces loopback lo
+set interfaces tunnel tun0 address '42.0.0.1/30'
+set interfaces tunnel tun0 encapsulation 'gre'
+set interfaces tunnel tun0 remote '1.0.0.2'
+set interfaces tunnel tun0 source-address '2.0.0.2'
+set protocols static route 0.0.0.0/0 next-hop 2.0.0.1
+set protocols static route 0.0.1.0/24 next-hop 42.0.0.2
+set system config-management commit-revisions '100'
+set system conntrack modules ftp
+set system conntrack modules h323
+set system conntrack modules nfs
+set system conntrack modules pptp
+set system conntrack modules sip
+set system conntrack modules sqlnet
+set system conntrack modules tftp
+set system console device ttyS0 speed '115200'
+set system host-name 'vyos'
+set system login user vyos authentication encrypted-password '$6$FNYaM0LUm/A$ltzUPpNEf2l5nrh7jSy/nndMii3jBaAsGI2nd.uKirJreffGcNxrOJfcZ9toERAG/SBLq5JxG8x2FoUldCHAQ.'
+set system login user vyos authentication plaintext-password ''
+set system ntp server time1.vyos.net
+set system ntp server time2.vyos.net
+set system ntp server time3.vyos.net
+set system syslog global facility all level 'info'
+set system syslog global facility protocols level 'debug'
